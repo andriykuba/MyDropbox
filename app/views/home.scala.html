@@ -1,0 +1,96 @@
+@(fileMap: Map[String,String] , backendErrors: List[String])
+@main("MyDropbox") {
+<!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <title>MyDropbox</title>
+            <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/foundation.css")">
+            <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/normalize.min.css")">
+            <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/foundation_icons.css")">
+            <script src="@routes.Assets.versioned("javascripts/modernizr.min.js")" type="text/javascript"></script>
+            <script src="@routes.Assets.versioned("javascripts/foundation.js")" type="text/javascript"></script>
+            <script src="@routes.Assets.versioned("javascripts/jquery.js")" type="text/javascript"></script>
+        </head>
+        <body>
+
+            <div class="row">
+                <div class="large-3 columns">
+                    <h1>
+                        <img src="@routes.Assets.versioned("images/my_dropbox_logo.jpg")"/>
+                    </h1>
+                </div>
+            </div>
+
+            <div class="row">
+
+                @if( backendErrors.nonEmpty ){
+                    @for(error <- backendErrors){
+                        <div data-alert class="alert-box info radius">
+                            <p>@error</p>
+                        </div>
+                    }
+                }
+
+                <div class="large-9 push-3 columns">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>File name</th>
+                                <th width="100">Download</th>
+                                <th width="100">Delete</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @if(!fileMap.isEmpty){
+
+                                @for((key,value) <- fileMap){
+                                <tr>
+                                    <td>
+                                        <a>@value</a>
+                                    </td>
+                                    <td>
+                                        <a href="@key">
+                                            <img src="@routes.Assets.versioned("images/icons/fi-download.svg")"/>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href ="/delete/@key">
+                                            <img src="@routes.Assets.versioned("images/icons/fi-trash.svg")"/>
+                                        </a>
+                                    </td>
+                                </tr>
+                                }
+                            }else{
+                                <p>There is no file behind the integration facade</p>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div class="large-3 pull-9 columns">
+
+                @helper.form(action = routes.FileUploadController.upload, 'enctype -> "multipart/form-data") {
+                    <input type="file" name="picture">
+                    <p>
+                        <button type="submit" class="button round">Send</button>
+                    </p>
+                }
+
+                </div>
+            </div>
+
+
+            <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/js/foundation.min.js"></script>
+            <script>
+                    $(document).foundation();
+            </script>
+        </body>
+    </html>
+}
